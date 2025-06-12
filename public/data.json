@@ -1,0 +1,36 @@
+{
+  "contacts": [
+    {
+      "name": "Alice",
+      "lastMessage": "Salut ! Comment ça va ?",
+      "time": "14:30",
+      "active": true,
+      "messages": [
+        { "text": "Salut ! Comment ça va ?", "time": "14:25", "sent": false },
+        { "text": "Ça va bien, merci ! Et toi ?", "time": "14:27", "sent": true },
+        { "text": "Super ! Tu veux qu'on se voit ce soir ?", "time": "14:30", "sent": false }
+      ]
+    },
+    {
+      "name": "Bob",
+      "lastMessage": "À bientôt !",
+      "time": "13:45",
+      "active": false,
+      "messages": []
+    },
+    {
+      "name": "Charlie",
+      "lastMessage": "Parfait, merci !",
+      "time": "12:20",
+      "active": false,
+      "messages": []
+    },
+    {
+      "name": "Diana",
+      "lastMessage": "Tu es libre ce soir ?",
+      "time": "11:15",
+      "active": false,
+      "messages": []
+    }
+  ]
+}

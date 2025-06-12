@@ -1,0 +1,21 @@
+{
+  "contacts": [
+    { "id": 1, "name": "Madibo Ka", "avatar": "A", "phone": "785942490", "lastMessage": "Salut, comment ça va ?", "time": "14:30", "online": true },
+    { "id": 2, "name": "Mariama Bary", "avatar": "B", "phone": "781234567", "lastMessage": "On se voit demain ?", "time": "13:45", "online": false },
+    { "id": 3, "name": "Fallou Senghor", "avatar": "C", "phone": "761234567", "lastMessage": "Merci pour l'info !", "time": "12:20", "online": true },
+    { "id": 4, "name": "Abdoulaye Diallo", "avatar": "D", "phone": "751234567", "lastMessage": "À bientôt", "time": "11:15", "online": false },
+    { "id": 5, "name": "Cheikh Ngom", "avatar": "E", "phone": "701234567", "lastMessage": "Super idée !", "time": "10:30", "online": true }
+  ],
+  "messages": {
+    "1": [
+      { "id": 1, "text": "Salut ! Comment ça va ?", "sent": false, "time": "14:25" },
+      { "id": 2, "text": "Ça va très bien, merci ! Et toi ?", "sent": true, "time": "14:26" },
+      { "id": 3, "text": "Super ! Tu fais quoi ce weekend ?", "sent": false, "time": "14:30" }
+    ],
+    "2": [
+      { "id": 1, "text": "On se voit demain pour le projet ?", "sent": false, "time": "13:40" },
+      { "id": 2, "text": "Oui, bien sûr ! À quelle heure ?", "sent": true, "time": "13:42" },
+      { "id": 3, "text": "Vers 14h ça te va ?", "sent": false, "time": "13:45" }
+    ]
+  }
+}

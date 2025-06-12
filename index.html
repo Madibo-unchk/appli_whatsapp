@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WhatsApp Clone</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="font-sans  h-screen overflow-hidden flex items-center justify-center">
+    <div class="flex h-full w-full  bg-gray-800">
+        <!-- Sidebar -->
+        <div class="w-96 bg-gray-900 border-r border-gray-700 flex flex-col">
+            <!-- Sidebar Header -->
+            <div class="bg-gray-800 px-4 py-3 flex justify-between items-center border-b border-gray-700">
+                <div class="text-white font-bold text-xl" id="sidebarTitle">
+                    Discussion
+                </div>
+                <div class="flex gap-5">
+                    <div class="relative">
+                        <div class="bg-white text-green-600 rounded-full w-8 h-8 flex items-center justify-center cursor-pointer transition-colors hover:bg-gray-200"
+                             onclick="ChatUI.showContactsPage()" title="Nouveau">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12M6 12h12"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="relative">
+                        <div class="text-gray-400 cursor-pointer text-xl transition-colors hover:text-white" onclick="ChatUI.showMenu()">⋮</div>
+                        <!-- Menu Options placé ici -->
+                        <div id="menuOptions" class="hidden absolute right-0 mt-2 w-56 bg-gray-800 border border-gray-700 rounded-lg shadow-lg z-50">
+                            <button class="block w-full text-left px-4 py-2 text-gray-100 hover:bg-gray-700" onclick="ContactManager.showCreateGroupDialog()">Nouveau groupe</button>
+                            <button class="block w-full text-left px-4 py-2 text-gray-100 hover:bg-gray-700" onclick="MessageHandler.showImportantMessages()">Messages importants</button>
+                            <button class="block w-full text-left px-4 py-2 text-gray-100 hover:bg-gray-700" onclick="ChatUI.selectDiscussions()">Sélectionner les discussions</button>
+                            <button class="block w-full text-left px-4 py-2 text-red-400 hover:bg-red-600" onclick="AuthManager.logout()">Déconnexion</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Search Container -->
+            <div class="p-2.5 bg-gray-900">
+                <input type="text" 
+                       class="bg-gray-800 border-none py-3 px-4 rounded-lg text-gray-100 w-full text-sm placeholder-gray-500" 
+                       placeholder="Rechercher ou commencer une nouvelle discussion" 
+                       oninput="ContactManager.searchContacts(this.value)">
+            </div>
+
+            <!-- Déplace ici les boutons d'action -->
+            <div id="contactsActions" class="hidden flex flex-col gap-2 mb-3 px-4">
+                <button class="flex items-center gap-2 bg-green-700 hover:bg-green-800 text-white px-3 py-2 rounded text-sm"
+                    onclick="ContactManager.showCreateGroupDialog()">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2h5"/>
+                        <circle cx="12" cy="7" r="4"/>
+                    </svg>
+                    Nouveau groupe
+                </button>
+                <button class="flex items-center gap-2 bg-green-700 hover:bg-green-800 text-white px-3 py-2 rounded text-sm"
+                    onclick="ContactManager.showCreateContactDialog()">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                    </svg>
+                    Nouveau contact
+                </button>
+            
+                <button class="flex items-center gap-2 bg-green-700 hover:bg-green-800 text-white px-3 py-2 rounded text-sm"
+                    onclick="CommunityManager.showCreateCommunityDialog()">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20h10M12 4v16m8-8H4"/>
+                    </svg>
+                    Nouvelle communauté
+                </button>
+            </div>
+            
+            <!-- Contacts List -->
+            <div class="flex-1 overflow-y-auto" id="contactsList">
+                <!-- Les contacts seront ajoutés ici dynamiquement -->
+            </div>
+        </div>
+
+        <!-- Chat Area -->
+        <div class="flex-1 flex flex-col bg-gray-900">
+            <!-- Welcome Screen -->
+            <div id="welcomeScreen" class="flex flex-col items-center justify-center h-full text-center text-gray-500">
+                <div class="w-50 h-50 bg-green-600 rounded-full flex items-center justify-center text-6xl text-white mb-8">💬</div>
+                <h2 class="text-2xl mb-4">WhatsApp Web</h2>
+                <p>Sélectionnez une conversation pour commencer à discuter</p>
+            </div>
+
+            <!-- Chat Container -->
+            <div id="chatContainer" class="hidden h-full flex flex-col">
+                <!-- Chat Header -->
+                <div class="bg-gray-800 px-4 py-3 flex items-center border-b border-gray-700">
+                    <div class="w-10 h-10 rounded-full bg-green-600 flex items-center justify-center text-white font-bold mr-4" id="chatAvatar">A</div>
+                    <div class="flex-1">
+                        <div class="text-gray-100 font-medium" id="chatName">Contact</div>
+                        <div class="text-gray-500 text-sm" id="chatStatus">en ligne</div>
+                    </div>
+                </div>
+
+                <!-- Typing Indicator -->
+                <div class="hidden items-center py-2.5 px-4 text-gray-500 text-sm" id="typingIndicator">
+                    <span id="typingUser">Alice</span> est en train d'écrire
+                    <div class="flex gap-1 ml-1">
+                        <div class="w-1 h-1 bg-gray-500 rounded-full typing-dot"></div>
+                        <div class="w-1 h-1 bg-gray-500 rounded-full typing-dot"></div>
+                        <div class="w-1 h-1 bg-gray-500 rounded-full typing-dot"></div>
+                    </div>
+                </div>
+
+                <!-- Messages Container -->
+                <div class="flex-1 p-5 overflow-y-auto chat-bg" id="messagesContainer">
+                    <!-- Les messages seront ajoutés ici -->
+                </div>
+
+                <!-- Message Input Container -->
+                <div class="p-4 bg-gray-800 flex items-center gap-2.5">
+                    <div class="text-gray-500 cursor-pointer text-xl p-2.5 rounded-full transition-colors hover:bg-gray-700" onclick="EmojiManager.toggleEmojiPicker()">😊</div>
+                    <div class="text-gray-500 cursor-pointer text-xl p-2.5 rounded-full transition-colors hover:bg-gray-700" onclick="FileManager.showAttachMenu()">📎</div>
+                    <input type="text" 
+                           class="flex-1 bg-gray-700 border-none py-3 px-4 rounded-full text-gray-100 text-sm placeholder-gray-500" 
+                           id="messageInput" 
+                           placeholder="Tapez votre message" 
+                           onkeypress="MessageHandler.handleKeyPress(event)"
+                           oninput="MessageHandler.handleTyping()">
+                    <button class="bg-green-600 border-none text-white w-11 h-11 rounded-full cursor-pointer flex items-center justify-center text-lg transition-colors hover:bg-green-700" onclick="MessageHandler.sendMessage()">➤</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Page de connexion -->
+    <div id="loginPage" class="fixed inset-0 flex items-center justify-center bg-gray-900 z-50">
+        <form id="loginForm" class="bg-gray-800 p-8 rounded-lg shadow-lg flex flex-col gap-4 w-80">
+            <h2 class="text-2xl text-white font-bold mb-4 text-center">Connexion</h2>
+            <input type="text" id="username" placeholder="Nom d'utilisateur" class="px-4 py-2 rounded bg-gray-700 text-gray-100 outline-none" required>
+            <input type="tel" id="phone" placeholder="Numéro de téléphone" class="px-4 py-2 rounded bg-gray-700 text-gray-100 outline-none" required pattern="^\d{6,15}$">
+            <button type="submit" class="bg-green-600 hover:bg-green-700 text-white py-2 rounded font-semibold">Se connecter</button>
+        </form>
+    </div>
+
+    <!-- Scripts modulaires -->
+     <script src="script.js"></script>
+    <script src="DataLoader.js"></script>
+    <script src="contactManager.js"></script>
+    <script src="MessageHandler.js"></script>
+    <script src="ChatUI.js"></script>
+    <script src="TypingIndicator.js"></script>
+    <script src="EmojiManager.js"></script>
+    <script src="FileManager.js"></script>
+    <script src="NotificationManager.js"></script>
+    <script src="ThemeManager.js"></script>
+    <script src="creatFunct.js"></script>
+    <script src="data.json"></script>
+
+    <!-- Add Menu -->
+    <div id="addMenu" class="hidden absolute left-28 mt-2 w-56 bg-gray-800 border border-gray-700 rounded-lg shadow-lg z-50">
+        <button class="block w-full text-left px-4 py-2 text-gray-100 hover:bg-gray-700" onclick="ContactManager.showCreateGroupDialog()">Nouveau groupe</button>
+        <button class="block w-full text-left px-4 py-2 text-gray-100 hover:bg-gray-700" onclick="MessageHandler.showImportantMessages()">Messages importants</button>
+        <button class="block w-full text-left px-4 py-2 text-gray-100 hover:bg-gray-700" onclick="ChatUI.selectDiscussions()">Sélectionner les discussions</button>
+        <button class="block w-full text-left px-4 py-2 text-red-400 hover:bg-red-600" onclick="AuthManager.logout()">Déconnexion</button>
+    </div>
+
+    <!-- Menu Options -->
+    <div id="menuOptions" class="hidden absolute left-56 mt-2 w-56 bg-gray-800 border border-gray-700 rounded-lg shadow-lg z-50">
+        <button class="block w-full text-left px-4 py-2 text-gray-100 hover:bg-gray-700" onclick="ContactManager.showProfile()">Profil</button>
+        <button class="block w-full text-left px-4 py-2 text-gray-100 hover:bg-gray-700" onclick="ThemeManager.toggleTheme()">Changer le thème</button>
+        <button class="block w-full text-left px-4 py-2 text-red-400 hover:bg-red-600" onclick="AuthManager.logout()">Déconnexion</button>
+    </div>
+
+    <!-- Nouveau Modal -->
+    <div id="addModal" class="hidden fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+        <div class="bg-gray-900 rounded-lg shadow-lg w-80 p-6">
+            <h2 class="text-xl text-white font-bold mb-4">Nouveau</h2>
+            <button class="block w-full text-left px-4 py-3 mb-2 rounded bg-gray-800 text-gray-100 hover:bg-green-700 transition"
+                onclick="ContactManager.showCreateGroupDialog(); ChatUI.hideAddModal();">Nouveau groupe</button>
+            <button class="block w-full text-left px-4 py-3 mb-2 rounded bg-gray-800 text-gray-100 hover:bg-green-700 transition"
+                onclick="ContactManager.showCreateContactDialog(); ChatUI.hideAddModal();">Nouveau contact</button>
+            <button class="block w-full text-left px-4 py-3 rounded bg-gray-800 text-gray-100 hover:bg-green-700 transition"
+                onclick="CommunityManager.showCreateCommunityDialog(); ChatUI.hideAddModal();">Nouvelle communauté</button>
+            <button class="block w-full mt-4 text-center text-gray-400 hover:text-white" onclick="ChatUI.hideAddModal()">Annuler</button>
+        </div>
+    </div>
+
+    <!-- Liste des contacts (modale) -->
+    <div id="contactsModal" class="hidden fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+        <div class="bg-gray-900 rounded-lg shadow-lg w-96 max-h-[80vh] p-6 overflow-y-auto">
+            <h2 class="text-xl text-white font-bold mb-4">Liste des contacts</h2>
+            <div id="contactsListModal"></div>
+            <button class="block w-full mt-4 text-center text-gray-400 hover:text-white" onclick="ChatUI.hideContactsModal()">Fermer</button>
+        </div>
+    </div>
+
+    <!-- Modale de création de contact -->
+    <div id="createContactModal" class="hidden fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+        <div class="bg-gray-900 rounded-lg shadow-lg w-80 p-6">
+            <h2 class="text-xl text-white font-bold mb-4">Nouveau contact</h2>
+            <input id="newContactName" type="text" placeholder="Nom du contact"
+                class="w-full mb-3 px-3 py-2 rounded bg-gray-800 text-gray-100 border-none outline-none" />
+            <input id="newContactPhone" type="tel" placeholder="Numéro de téléphone"
+                class="w-full mb-3 px-3 py-2 rounded bg-gray-800 text-gray-100 border-none outline-none"
+                pattern="^\d{6,15}$" required />
+            <button class="w-full bg-green-700 hover:bg-green-800 text-white py-2 rounded mb-2"
+                onclick="ContactManager.createContact()">Créer</button>
+            <button class="w-full text-gray-400 hover:text-white" onclick="ContactManager.hideCreateContactModal()">Annuler</button>
+        </div>
+    </div>
+
+    <script>
+        let isContactsPage = false;
+    document.getElementById('loginForm').onsubmit = async function(e) {
+    e.preventDefault();
+    // ...vérification ici...
+    document.getElementById('loginPage').style.display = 'none';
+};
+    </script>
+</body>
+</html>
