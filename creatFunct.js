@@ -1,9 +1,9 @@
-
 async function loadData() {
-            const res = await fetch('src/data.json');
-            return await res.json();
+            const res = await fetch('https://render-json-server-1.onrender.com/contacts');
+            const contacts = await res.json();
+            return { contacts }; // pour garder la même structure que data.contacts
         }
-
+https://render-json-server-1.onrender.com
         // Fonction pour créer un élément de contact
         function createContactItem(name, lastMessage, time, isActive = false) {
             const contactItem = document.createElement('div');
